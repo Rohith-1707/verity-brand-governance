@@ -1,0 +1,14 @@
+version: '3.8'
+
+services:
+  verity:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: verity-platform
+    ports:
+      - "8000:8000"
+    environment:
+      - PORT=8000
+      - VERITY_ALLOW_DEMO=1
+    restart: unless-stopped
