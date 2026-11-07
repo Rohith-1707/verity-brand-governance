@@ -191,33 +191,28 @@ def build_pdf(filename):
     # Two Main Cards on Page 1
     sub_content = [
         Paragraph("<b>SUBMISSION</b>", card_title),
-        Spacer(1, 6),
+        Spacer(1, 8),
         Paragraph("<b>Hackathon:</b> CodeNexus India Hackathon", body_style),
-        Spacer(1, 4),
+        Spacer(1, 6),
         Paragraph("<b>Institution:</b> Bangalore Institute of Technology", body_style),
-        Spacer(1, 4),
+        Spacer(1, 6),
         Paragraph("<b>Team:</b> The Optimus Primes", body_style),
         Spacer(1, 8),
         Paragraph("<b>Live Website:</b><br/><font color='#0891b2'>https://rohith-1707.github.io/verity-brand-governance/</font>", body_style),
         Spacer(1, 6),
         Paragraph("<b>Source Code:</b><br/><font color='#0891b2'>https://github.com/Rohith-1707/verity-brand-governance.git</font>", body_style),
-        Spacer(1, 8),
-        Paragraph("<b>Status:</b> Fully Functional, Deployed Web Application", body_style),
     ]
 
     team_content = [
         Paragraph("<b>FOUR-MEMBER TEAM</b>", card_title),
-        Spacer(1, 6),
-        Paragraph("<b>Member 1 — Rohith H.M:</b> Team Leader, AI/ML & NLP Developer", body_style),
-        Spacer(1, 5),
-        Paragraph("<b>Member 2 — Rohith N:</b> System Architect", body_style),
-        Spacer(1, 5),
-        Paragraph("<b>Member 3 — Samrudh S Koushik:</b> Backend & Database Developer", body_style),
-        Spacer(1, 5),
-        Paragraph("<b>Member 4 — Anurag R Rai:</b> Frontend & UI/UX Developer", body_style),
         Spacer(1, 8),
-        Paragraph("<b>Implemented Roles:</b>", card_title),
-        Paragraph("• Platform Administrator: <b>Rohith (Administrator)</b><br/>• Editorial Reviewer: <b>Elena Rostova</b><br/>• Content Creator: <b>Marcus Vance</b>", bullet_style),
+        Paragraph("<b>Member 1 — Rohith H.M:</b> Team Leader & AI/ML & NLP Developer", body_style),
+        Spacer(1, 6),
+        Paragraph("<b>Member 2 — Rohith N:</b> System Architect", body_style),
+        Spacer(1, 6),
+        Paragraph("<b>Member 3 — Samrudh S Koushik:</b> Backend & Database Developer", body_style),
+        Spacer(1, 6),
+        Paragraph("<b>Member 4 — Anurag R Rai:</b> Frontend & UI/UX Developer", body_style),
     ]
 
     t1 = Table([[sub_content, team_content]], colWidths=[250, 250])
