@@ -210,7 +210,7 @@ def seed_demo_data_if_empty():
         conn.execute(text("""
             INSERT INTO profiles (id, org_id, display_name, email, role, blocked)
             VALUES 
-                (:admin_id, :org_id, 'Sarah Chen', 'admin@verity.acme.com', 'admin', 0),
+                (:admin_id, :org_id, 'Rohith (Administrator)', 'rohith@verity.acme.com', 'admin', 0),
                 (:creator_id, :org_id, 'Marcus Vance', 'creator@verity.acme.com', 'creator', 0),
                 (:reviewer_id, :org_id, 'Elena Rostova', 'reviewer@verity.acme.com', 'reviewer', 0)
         """), {

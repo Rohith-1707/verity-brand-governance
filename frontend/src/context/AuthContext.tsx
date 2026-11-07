@@ -3,21 +3,21 @@ import { api, UserProfile, getToken, setToken, removeToken } from '../api';
 
 const DEFAULT_ADMIN: UserProfile = {
   id: 'user-admin-01',
-  name: 'Sarah Chen',
-  email: 'admin@verity.acme.com',
+  name: 'Rohith (Administrator)',
+  email: 'rohith@verity.acme.com',
   role: 'admin',
   org_id: 'org-verity-demo',
   org_name: 'Acme Global Technologies'
 };
 
 interface AuthContextType {
-  user: UserProfile;
+  user: UserProfile | null;
   token: string | null;
   loading: boolean;
   theme: 'dark' | 'light';
   toggleTheme: () => void;
   login: (email: string) => Promise<void>;
-  demoLogin: (role: 'admin' | 'creator' | 'reviewer') => Promise<void>;
+  demoLogin: (role?: 'admin' | 'creator' | 'reviewer') => Promise<void>;
   register: (name: string, email: string, role?: string, orgName?: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -27,7 +27,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile>(DEFAULT_ADMIN);
+  const [user, setUser] = useState<UserProfile | null>(() => {
+    return localStorage.getItem('verity_logged_out') === 'true' ? null : DEFAULT_ADMIN;
+  });
   const [token, setTokenState] = useState<string | null>(getToken());
   const [loading, setLoading] = useState<boolean>(true);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -40,21 +42,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('verity_theme', nextTheme);
     if (nextTheme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   };
 
   useEffect(() => {
     if (theme === 'dark') {
       document.documentElement.classList.add('dark');
+      document.documentElement.classList.remove('light');
     } else {
       document.documentElement.classList.remove('dark');
+      document.documentElement.classList.add('light');
     }
   }, [theme]);
 
   const initAuth = async () => {
     setLoading(true);
+    const loggedOut = localStorage.getItem('verity_logged_out') === 'true';
+    if (loggedOut) {
+      setUser(null);
+      setLoading(false);
+      return;
+    }
     try {
       const existingToken = getToken();
       if (existingToken) {
@@ -64,13 +76,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           return;
         } catch {}
       }
-      // Zero-login demo mode: automatically acquire demo admin session
+      // Demo authentication: default to administrator credentials
       const res = await api.demoLogin('admin');
       setToken(res.access_token);
       setTokenState(res.access_token);
       setUser(res.user);
     } catch {
-      // Fallback: stay on default admin user with zero blocking
       setUser(DEFAULT_ADMIN);
     } finally {
       setLoading(false);
@@ -83,6 +94,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const login = async (email: string) => {
     setLoading(true);
+    localStorage.removeItem('verity_logged_out');
     try {
       const res = await api.login(email);
       setToken(res.access_token);
@@ -93,15 +105,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   };
 
-  const demoLogin = async (role: 'admin' | 'creator' | 'reviewer') => {
+  const demoLogin = async (role: 'admin' | 'creator' | 'reviewer' = 'admin') => {
     setLoading(true);
+    localStorage.removeItem('verity_logged_out');
     try {
       const res = await api.demoLogin(role);
       setToken(res.access_token);
       setTokenState(res.access_token);
       setUser(res.user);
     } catch {
-      setUser((prev) => ({ ...prev, role }));
+      if (role === 'admin') {
+        setUser(DEFAULT_ADMIN);
+      } else {
+        setUser({
+          ...DEFAULT_ADMIN,
+          id: `user-${role}-01`,
+          role,
+          name: role === 'reviewer' ? 'Elena Rostova' : 'Marcus Vance',
+          email: `${role}@verity.acme.com`
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -113,6 +136,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const register = async (name: string, email: string, role = 'creator', orgName?: string) => {
     setLoading(true);
+    localStorage.removeItem('verity_logged_out');
     try {
       const res = await api.register({ display_name: name, email, role, org_name: orgName });
       setToken(res.access_token);
@@ -124,8 +148,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    // Reset to default Admin demo mode without locking out the user
-    demoLogin('admin');
+    removeToken();
+    setTokenState(null);
+    setUser(null);
+    localStorage.setItem('verity_logged_out', 'true');
   };
 
   return (

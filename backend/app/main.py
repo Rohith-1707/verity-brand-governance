@@ -123,7 +123,7 @@ def token_payload(authorization: str | None) -> dict:
             "sub": "user-admin-01",
             "org_id": "org-verity-demo",
             "role": "admin",
-            "name": "Sarah Chen"
+            "name": "Rohith (Administrator)"
         }
     tok = authorization[7:].strip()
     if not tok or tok in ("null", "undefined", "demo", "demo-token"):
@@ -131,7 +131,7 @@ def token_payload(authorization: str | None) -> dict:
             "sub": "user-admin-01",
             "org_id": "org-verity-demo",
             "role": "admin",
-            "name": "Sarah Chen"
+            "name": "Rohith (Administrator)"
         }
     
     # 1. Try Local JWT
@@ -156,7 +156,7 @@ def token_payload(authorization: str | None) -> dict:
         "sub": "user-admin-01",
         "org_id": "org-verity-demo",
         "role": "admin",
-        "name": "Sarah Chen"
+        "name": "Rohith (Administrator)"
     }
 
 
