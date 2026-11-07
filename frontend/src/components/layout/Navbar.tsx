@@ -38,31 +38,14 @@ export const Navbar: React.FC = () => {
           {theme === 'dark' ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-cyan-400" />}
         </button>
 
-        {user ? (
-          <Link
-            to="/app/dashboard"
-            className="flex items-center space-x-2 text-xs sm:text-sm font-semibold bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 px-4 py-2 rounded-lg shadow-md hover:brightness-110 transition"
-          >
-            <span>Open Console</span>
-            <ArrowRight className="w-4 h-4" />
-          </Link>
-        ) : (
-          <div className="flex items-center space-x-2">
-            <Link
-              to="/login"
-              className="text-xs sm:text-sm font-medium text-slate-300 hover:text-white px-3 py-2 rounded-lg hover:bg-slate-800/50 transition"
-            >
-              Sign In
-            </Link>
-            <Link
-              to="/login"
-              className="flex items-center space-x-1.5 text-xs sm:text-sm font-semibold bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-3.5 py-2 rounded-lg shadow-sm transition"
-            >
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>Try Demo</span>
-            </Link>
-          </div>
-        )}
+        <Link
+          to="/app/dashboard"
+          className="flex items-center space-x-2 text-xs sm:text-sm font-semibold bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 px-4 py-2 rounded-lg shadow-md hover:brightness-110 transition"
+        >
+          <Sparkles className="w-3.5 h-3.5" />
+          <span>Launch Console</span>
+          <ArrowRight className="w-4 h-4" />
+        </Link>
       </div>
     </nav>
   );

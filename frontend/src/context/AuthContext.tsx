@@ -1,8 +1,17 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { api, UserProfile, getToken, setToken, removeToken } from '../api';
 
+const DEFAULT_ADMIN: UserProfile = {
+  id: 'user-admin-01',
+  name: 'Sarah Chen',
+  email: 'admin@verity.acme.com',
+  role: 'admin',
+  org_id: 'org-verity-demo',
+  org_name: 'Acme Global Technologies'
+};
+
 interface AuthContextType {
-  user: UserProfile | null;
+  user: UserProfile;
   token: string | null;
   loading: boolean;
   theme: 'dark' | 'light';
@@ -12,12 +21,13 @@ interface AuthContextType {
   register: (name: string, email: string, role?: string, orgName?: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
+  switchRole: (role: 'admin' | 'creator' | 'reviewer') => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile>(DEFAULT_ADMIN);
   const [token, setTokenState] = useState<string | null>(getToken());
   const [loading, setLoading] = useState<boolean>(true);
   const [theme, setTheme] = useState<'dark' | 'light'>(() => {
@@ -43,25 +53,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [theme]);
 
-  const refreshUser = async () => {
+  const initAuth = async () => {
+    setLoading(true);
     try {
-      if (getToken()) {
-        const profile = await api.getMe();
-        setUser(profile);
-      } else {
-        setUser(null);
+      const existingToken = getToken();
+      if (existingToken) {
+        try {
+          const profile = await api.getMe();
+          setUser(profile);
+          return;
+        } catch {}
       }
+      // Zero-login demo mode: automatically acquire demo admin session
+      const res = await api.demoLogin('admin');
+      setToken(res.access_token);
+      setTokenState(res.access_token);
+      setUser(res.user);
     } catch {
-      setUser(null);
-      removeToken();
-      setTokenState(null);
+      // Fallback: stay on default admin user with zero blocking
+      setUser(DEFAULT_ADMIN);
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    refreshUser();
+    initAuth();
   }, []);
 
   const login = async (email: string) => {
@@ -83,9 +100,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setToken(res.access_token);
       setTokenState(res.access_token);
       setUser(res.user);
+    } catch {
+      setUser((prev) => ({ ...prev, role }));
     } finally {
       setLoading(false);
     }
+  };
+
+  const switchRole = async (role: 'admin' | 'creator' | 'reviewer') => {
+    await demoLogin(role);
   };
 
   const register = async (name: string, email: string, role = 'creator', orgName?: string) => {
@@ -101,9 +124,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const logout = () => {
-    removeToken();
-    setTokenState(null);
-    setUser(null);
+    // Reset to default Admin demo mode without locking out the user
+    demoLogin('admin');
   };
 
   return (
@@ -116,9 +138,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         toggleTheme,
         login,
         demoLogin,
+        switchRole,
         register,
         logout,
-        refreshUser,
+        refreshUser: initAuth,
       }}
     >
       {children}

@@ -25,19 +25,8 @@ import { BrandHealthPage } from './pages/auth/BrandHealthPage';
 import { AuditHistoryPage } from './pages/auth/AuditHistoryPage';
 import { SettingsPage } from './pages/auth/SettingsPage';
 
-// Protected Route Guard
+// Protected Route Guard - In Demo Evaluator Mode, access is never blocked
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { user, loading } = useAuth();
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-950 flex items-center justify-center text-cyan-400 font-mono text-sm">
-        Authenticating VERITY Session...
-      </div>
-    );
-  }
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
   return <>{children}</>;
 };
 

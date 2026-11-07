@@ -51,6 +51,19 @@ export const RegisterPage: React.FC = () => {
             </p>
           </div>
 
+          <div className="p-4 rounded-xl bg-gradient-to-b from-cyan-950/40 to-slate-900 border border-cyan-800/60 shadow-lg text-center space-y-2">
+            <p className="text-xs text-slate-300">
+              Evaluating the platform? Demo mode is already active without account creation.
+            </p>
+            <Link
+              to="/app/dashboard"
+              className="inline-flex items-center space-x-1.5 text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 px-4 py-2 rounded-lg transition"
+            >
+              <span>Launch Platform as Administrator</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start space-x-2.5">
               <AlertCircle className="w-4 h-4 text-rose-400 shrink-0 mt-0.5" />

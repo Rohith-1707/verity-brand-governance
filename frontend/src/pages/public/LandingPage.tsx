@@ -55,10 +55,10 @@ export const LandingPage: React.FC = () => {
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto">
           <Link
-            to="/login"
+            to="/app/dashboard"
             className="w-full sm:w-auto px-8 py-3.5 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 shadow-lg shadow-cyan-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] transition-all flex items-center justify-center space-x-2 text-sm"
           >
-            <span>Get Started</span>
+            <span>Launch Platform (Admin)</span>
             <ArrowRight className="w-4 h-4" />
           </Link>
 
@@ -326,10 +326,10 @@ export const LandingPage: React.FC = () => {
           Experience evidence-linked verification, automated change impact alerts, and explainable brand governance right in your browser.
         </p>
         <Link
-          to="/login"
+          to="/app/dashboard"
           className="inline-flex items-center space-x-2 px-8 py-3.5 rounded-xl font-bold bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 shadow-xl shadow-cyan-500/20 hover:scale-105 transition"
         >
-          <span>Launch Verification Demo</span>
+          <span>Launch Verification Demo (Admin Access)</span>
           <ArrowRight className="w-4 h-4" />
         </Link>
       </section>

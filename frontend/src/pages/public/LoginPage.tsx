@@ -60,7 +60,7 @@ export const LoginPage: React.FC = () => {
               <ShieldCheck className="w-7 h-7 text-slate-950 stroke-[2.5]" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-              Sign In to VERITY
+              VERITY Access Portal
             </h1>
             <p className="text-xs sm:text-sm text-slate-400 mt-2">
               Every Claim Needs Evidence. Every Publication Needs Accountability.
@@ -68,15 +68,31 @@ export const LoginPage: React.FC = () => {
           </div>
 
           {/* Quick Demo Switcher Card for Hackathon Judges */}
-          <div className="p-5 rounded-2xl bg-gradient-to-b from-cyan-950/40 to-slate-900 border border-cyan-800/60 shadow-xl space-y-3">
-            <div className="flex items-center space-x-2 text-xs font-bold text-cyan-400 uppercase tracking-wider">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span>Instant Evaluator Demo Access</span>
+          <div className="p-5 rounded-2xl bg-gradient-to-b from-cyan-950/40 to-slate-900 border border-cyan-800/60 shadow-xl space-y-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-2 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+                <Sparkles className="w-4 h-4 text-cyan-400" />
+                <span>Demo Mode Active • No Login Required</span>
+              </div>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-2 py-0.5 rounded-full font-semibold">
+                Auto-Authorized
+              </span>
             </div>
-            <p className="text-xs text-slate-300">
-              Select any role to test platform capabilities without credential setup:
-            </p>
-            <div className="grid grid-cols-1 gap-2 pt-1">
+
+            <Link
+              to="/app/dashboard"
+              className="w-full p-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-teal-400 text-slate-950 font-bold text-sm shadow-lg shadow-cyan-500/25 hover:brightness-110 transition flex items-center justify-center space-x-2"
+            >
+              <ShieldCheck className="w-5 h-5 stroke-[2.5]" />
+              <span>Launch Platform as Administrator</span>
+              <ArrowRight className="w-4 h-4" />
+            </Link>
+
+            <div className="pt-2 border-t border-slate-800">
+              <p className="text-xs text-slate-400 mb-2 font-medium">
+                Or explore the platform with a specific team perspective:
+              </p>
+              <div className="grid grid-cols-1 gap-2 pt-1">
               <button
                 type="button"
                 onClick={() => handleDemo('admin')}
@@ -132,6 +148,7 @@ export const LoginPage: React.FC = () => {
               </button>
             </div>
           </div>
+        </div>
 
           {error && (
             <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs flex items-start space-x-2.5">
