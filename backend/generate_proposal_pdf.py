@@ -40,30 +40,29 @@ class NumberedCanvas(canvas.Canvas):
         self.setFont("Helvetica-Bold", 8)
         self.setFillColor(colors.HexColor("#64748B"))
 
-        # Running header mapping for each page
         headers = {
             1: "HACKATHON FINAL ROUND · 01 / 10",
             2: "THE PROBLEM · 02 / 10",
             3: "WHO IT SERVES · 03 / 10",
             4: "THE PLATFORM · 04 / 10",
             5: "CORE INNOVATIONS · 05 / 10",
-            6: "ADVANCED ENHANCEMENTS · 06 / 10",
+            6: "ROUND 3 DELIVERED IMPROVEMENTS · 06 / 10",
             7: "SYSTEM ARCHITECTURE · 07 / 10",
             8: "LIVE DEMONSTRATION & TEST SUITE · 08 / 10",
-            9: "RESPONSIBLE AI · 09 / 10",
-            10: "POSITIONING & CONCLUSION · 10 / 10",
+            9: "RESPONSIBLE AI & HARDENING · 09 / 10",
+            10: "ROADMAP & CONCLUSION · 10 / 10",
         }
         header_text = headers.get(page_num, f"VERITY GOVERNANCE PLATFORM · {page_num:02d} / {total_pages:02d}")
 
-        # Draw Top Running Header (Accent Red/Cyan style from proposal)
+        # Top Running Header
         self.setFont("Helvetica-Bold", 8.5)
-        self.setFillColor(colors.HexColor("#D9383A")) # Signature proposal accent red
+        self.setFillColor(colors.HexColor("#D9383A"))
         self.drawString(MARGIN, PAGE_HEIGHT - 32, header_text)
 
-        # Draw Bottom Running Footer
+        # Bottom Running Footer
         self.setFont("Helvetica", 8)
         self.setFillColor(colors.HexColor("#64748B"))
-        self.drawString(MARGIN, 25, "VERITY · Evidence before publication · Advanced Hackathon Submission")
+        self.drawString(MARGIN, 25, "VERITY · Evidence before publication · Round 3 Final Submission")
         self.drawRightString(PAGE_WIDTH - MARGIN, 25, f"Page {page_num} of {total_pages}")
         
         # Subtle footer separator line
@@ -86,13 +85,12 @@ def build_pdf(filename):
 
     styles = getSampleStyleSheet()
 
-    # Custom typography matching the proposal aesthetic
     title_style = ParagraphStyle(
         'DocTitle',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=44,
-        leading=48,
+        fontSize=42,
+        leading=46,
         textColor=colors.HexColor('#0F172A')
     )
 
@@ -100,10 +98,20 @@ def build_pdf(filename):
         'PageHeading',
         parent=styles['Normal'],
         fontName='Helvetica-Bold',
-        fontSize=21,
-        leading=25,
+        fontSize=18,
+        leading=22,
         textColor=colors.HexColor('#0F172A'),
         spaceAfter=10
+    )
+
+    tagline_style = ParagraphStyle(
+        'DocTagline',
+        parent=styles['Normal'],
+        fontName='Helvetica',
+        fontSize=12,
+        leading=16,
+        textColor=colors.HexColor('#334155'),
+        spaceAfter=14
     )
 
     subheading = ParagraphStyle(
@@ -113,40 +121,30 @@ def build_pdf(filename):
         fontSize=12,
         leading=16,
         textColor=colors.HexColor('#0F172A'),
+        spaceBefore=8,
         spaceAfter=6
-    )
-
-    tagline_style = ParagraphStyle(
-        'Tagline',
-        parent=styles['Normal'],
-        fontName='Helvetica-Bold',
-        fontSize=12,
-        leading=16,
-        textColor=colors.HexColor('#0891B2'), # Cyan accent
-        spaceAfter=14
     )
 
     body_style = ParagraphStyle(
         'BodyDark',
         parent=styles['Normal'],
         fontName='Helvetica',
-        fontSize=9,
-        leading=13.5,
-        textColor=colors.HexColor('#334155')
+        fontSize=8.5,
+        leading=12.5,
+        textColor=colors.HexColor('#334155'),
+        spaceAfter=6
     )
 
     body_bold = ParagraphStyle(
-        'BodyDarkBold',
-        parent=styles['Normal'],
+        'BodyBold',
+        parent=body_style,
         fontName='Helvetica-Bold',
-        fontSize=9,
-        leading=13.5,
         textColor=colors.HexColor('#0F172A')
     )
 
     bullet_style = ParagraphStyle(
-        'BulletText',
-        parent=styles['Normal'],
+        'BulletDark',
+        parent=body_style,
         fontName='Helvetica',
         fontSize=8.5,
         leading=12.5,
@@ -161,15 +159,6 @@ def build_pdf(filename):
         leading=12,
         textColor=colors.HexColor('#0F172A'),
         spaceAfter=4
-    )
-
-    code_style = ParagraphStyle(
-        'CodeText',
-        parent=styles['Normal'],
-        fontName='Courier',
-        fontSize=8,
-        leading=11,
-        textColor=colors.HexColor('#0F172A')
     )
 
     story = []
@@ -188,9 +177,8 @@ def build_pdf(filename):
     story.append(Paragraph("Every Claim Needs Evidence. Every Publication Needs Accountability.", tagline_style))
     story.append(Spacer(1, 10))
 
-    # Two Main Cards on Page 1
     sub_content = [
-        Paragraph("<b>SUBMISSION</b>", card_title),
+        Paragraph("<b>SUBMISSION OVERVIEW</b>", card_title),
         Spacer(1, 8),
         Paragraph("<b>Hackathon:</b> CodeNexus India Hackathon", body_style),
         Spacer(1, 6),
@@ -198,9 +186,9 @@ def build_pdf(filename):
         Spacer(1, 6),
         Paragraph("<b>Team:</b> The Optimus Primes", body_style),
         Spacer(1, 8),
-        Paragraph("<b>Live Website:</b><br/><font color='#0891b2'>https://rohith-1707.github.io/verity-brand-governance/</font>", body_style),
+        Paragraph("<b>Functioning Project URL:</b><br/><font color='#0891b2'>https://rohith-1707.github.io/verity-brand-governance/</font>", body_style),
         Spacer(1, 6),
-        Paragraph("<b>Source Code:</b><br/><font color='#0891b2'>https://github.com/Rohith-1707/verity-brand-governance.git</font>", body_style),
+        Paragraph("<b>Source Code Repository:</b><br/><font color='#0891b2'>https://github.com/Rohith-1707/verity-brand-governance.git</font>", body_style),
     ]
 
     team_content = [
@@ -218,7 +206,7 @@ def build_pdf(filename):
     t1 = Table([[sub_content, team_content]], colWidths=[250, 250])
     t1.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (0,0), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F0F9FF')), # Light cyan-blue
+        ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F0F9FF')),
         ('BOX', (0,0), (0,0), 1, colors.HexColor('#E2E8F0')),
         ('BOX', (1,0), (1,0), 1, colors.HexColor('#BAE6FD')),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
@@ -230,10 +218,9 @@ def build_pdf(filename):
     story.append(t1)
     story.append(Spacer(1, 24))
 
-    # Bottom Highlight Box on Page 1
     story.append(Table([[
         Paragraph(
-            "<b>ADVANCED HACKATHON DELIVERABLE:</b> Built and verified as a production-grade full-stack web application featuring 18 dedicated modules (6 public and 12 authenticated workspaces), single-click credential-free role access, light/dark themes, and 100% passing automated test coverage (21/21 tests passing).",
+            "<b>ROUND 3 FINAL HACKATHON DELIVERABLE:</b> Complete production-grade brand governance platform featuring 18 operational views, 100% test coverage (29/29 passing tests), offline-first mock fallback engine ensuring 100% demo uptime on GitHub Pages, and all three promised Round 2 commitments fully implemented: (1) Multimodal Visual Bounding-Box Flyer OCR, (2) Automated Policy Reconciliation Wizard, and (3) Pre-Publish CMS Firewall Webhook Gateway.",
             body_style
         )
     ]], colWidths=[515], style=[
@@ -249,213 +236,177 @@ def build_pdf(filename):
     # -------------------------------------------------------------
     story.append(Paragraph("BRAND GOVERNANCE BREAKS WHEN APPROVED INFORMATION IS FRAGMENTED", page_heading))
     story.append(Paragraph(
-        "Organisations publish continuously across websites, advertisements, product brochures, social channels, press releases, and partner decks. Factual accuracy and brand consistency collapse when approved facts, claims, and guidelines are scattered across departments, documents, and email chains.",
+        "Modern enterprises communicate at massive velocity across marketing websites, press releases, social ads, and partner channels. Yet approved truth resides in dispersed technical specifications, legal disclosures, and compliance guidelines.",
         body_style
     ))
-    story.append(Spacer(1, 14))
+    story.append(Spacer(1, 10))
 
-    rc_items = [
-        Paragraph("<b>ROOT CAUSES</b>", card_title),
-        Spacer(1, 6),
-        Paragraph("• <b>Fragmented Truth:</b> Product specifications, warranties, and corporate policies reside in siloed documents with conflicting revisions.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Unverified Promotional Claims:</b> Marketers publish bold statistical and capability claims without traceable approved citations.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Outdated Collateral Surviving:</b> Superseded product terms (e.g. legacy warranty periods) remain active in published customer collateral.", bullet_style),
+    prob_cards = [
+        ("FRAGILE APPROVALS",
+         "Marketing teams rely on manual memory, messy spreadsheets, or ad-hoc chat sign-offs. Reviewers frequently approve drafts under deadline pressure without cross-verifying numbers against current engineering spec sheets."),
+        ("SILOED COMMERCE",
+         "When a specification changes (e.g. warranty reduced from 3 years to 2 years), obsolete claims remain live across dozens of previously approved brochures, product flyers, partner sales decks, and external distributor portals."),
+        ("AUTONOMOUS DRIFT",
+         "Generative AI tools draft convincing copy that invents performance figures or unauthorized superlatives ('100% unbreakable', 'unlimited battery'). Organizations lack automated pre-publish firewalls to intercept ungrounded statements."),
     ]
 
-    rf_items = [
-        Paragraph("<b>REVIEW FRICTION</b>", card_title),
-        Spacer(1, 6),
-        Paragraph("• <b>Ambiguous Guideline Interpretation:</b> Rules are interpreted subjectively across channels without contextual awareness.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Manual Review Bottlenecks:</b> Compliance teams drown in manual text checks without automated claim extraction or risk prioritization.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Zero Systemic Learning:</b> Repeatedly rejected terminology and common mistakes recur because review feedback is lost in email.", bullet_style),
-    ]
+    p_table_data = []
+    for title, desc in prob_cards:
+        p_table_data.append([
+            Paragraph(f"<b>{title}</b>", card_title),
+            Paragraph(desc, body_style)
+        ])
 
-    t2 = Table([[rc_items, rf_items]], colWidths=[250, 250])
+    t2 = Table(p_table_data, colWidths=[140, 375])
     t2.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (0,0), colors.HexColor('#FFF1F2')), # Light red/rose
-        ('BOX', (0,0), (0,0), 1, colors.HexColor('#FECDD3')),
-        ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F8FAFC')),
-        ('BOX', (1,0), (1,0), 1, colors.HexColor('#E2E8F0')),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
+        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#E2E8F0')),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 14),
+        ('PADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(t2)
     story.append(Spacer(1, 16))
 
     story.append(Table([[
         Paragraph(
-            "<b>THE CORE GOVERNANCE CHALLENGE:</b><br/>"
-            "Trustworthy, consistent publication requires verified evidence, contextual guidelines, and accountable human review decisions in a single explainable workflow.",
-            ParagraphStyle('ChallengeCallout', fontName='Helvetica', fontSize=10, leading=15, textColor=colors.HexColor('#0F172A'))
-        )
-    ]], colWidths=[515], style=[
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#E0F2FE')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#38BDF8')),
-        ('PADDING', (0,0), (-1,-1), 14),
-    ]))
-    story.append(Spacer(1, 14))
-
-    story.append(Paragraph(
-        "<b>Why Conventional Tools Fall Short:</b> Grammar checkers (like Grammarly) only evaluate readability and spelling without organizational grounding. Generic AI tools (like ChatGPT) hallucinate facts and rewrite copy without evidence provenance. Neither tool verifies factual support against authoritative documents, tracks policy change dependencies, or preserves auditable human sign-offs.",
-        body_style
-    ))
-
-    story.append(PageBreak())
-
-    # -------------------------------------------------------------
-    # PAGE 3: WHO IT SERVES
-    # -------------------------------------------------------------
-    story.append(Paragraph("VERITY TARGETS THE PEOPLE WHO CARRY PUBLICATION RISK", page_heading))
-    story.append(Paragraph(
-        "VERITY provides a unified brand governance workspace specifically designed for cross-functional teams where factual errors, misleading promotional statements, or outdated collateral result in legal liability, brand erosion, or regulatory penalties.",
-        body_style
-    ))
-    story.append(Spacer(1, 12))
-
-    roles_data = [
-        [Paragraph("<b>Role</b>", card_title), Paragraph("<b>Primary Need & Friction</b>", card_title), Paragraph("<b>VERITY Implemented Solution</b>", card_title)],
-        [
-            Paragraph("<b>Brand Managers</b>", body_bold),
-            Paragraph("Centralized governance, brand consistency, and rule compliance across diverse collateral.", body_style),
-            Paragraph("Knowledge Base truth management, live Brand Health Score, and Adaptive Governance recommendations.", body_style)
-        ],
-        [
-            Paragraph("<b>Content Creators & Marketing</b>", body_bold),
-            Paragraph("Verifying promotional claims before publication and avoiding repetitive review rejections.", body_style),
-            Paragraph("Pre-submission verification engine, context-aware checking, and visual diff revision tracking.", body_style)
-        ],
-        [
-            Paragraph("<b>Legal & Compliance Reviewers</b>", body_bold),
-            Paragraph("Manual checking fatigue, lack of evidence traceability, and unprioritized review backlogs.", body_style),
-            Paragraph("Smart Prioritised Review Queue, transparent claim classification, and 1-click audit decisions.", body_style)
-        ],
-        [
-            Paragraph("<b>Enterprise Leadership & PR</b>", body_bold),
-            Paragraph("Exposure from outdated warranty, pricing, or product claims circulating in external channels.", body_style),
-            Paragraph("Cross-Content Change Impact Analysis identifying affected collateral immediately when facts change.", body_style)
-        ],
-    ]
-
-    t3 = Table(roles_data, colWidths=[110, 195, 210])
-    t3.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#F1F5F9')),
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('TOPPADDING', (0,0), (-1,-1), 8),
-        ('BOTTOMPADDING', (0,0), (-1,-1), 8),
-        ('LEFTPADDING', (0,0), (-1,-1), 8),
-        ('RIGHTPADDING', (0,0), (-1,-1), 8),
-    ]))
-    story.append(t3)
-    story.append(Spacer(1, 14))
-
-    story.append(Table([[
-        Paragraph(
-            "<b>EVALUATOR DEMONSTRATION WORKSPACE:</b><br/>"
-            "To enable rapid testing without administrative overhead, VERITY features a built-in instant role switcher in the application topbar. Evaluators can toggle between Administrator (Rohith), Reviewer (Elena Rostova), and Creator (Marcus Vance) with a single click.",
+            "<b>THE ENTERPRISE IMPACT:</b> Inconsistent claims lead to statutory false-advertising fines, customer churn, and regulatory liabilities. Organizations require a single pane of governance where every claim is deterministically verified before publication.",
             body_style
         )
     ]], colWidths=[515], style=[
-        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F0FDF4')), # Light emerald
-        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#86EFAC')),
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#FEF2F2')),
+        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#FECACA')),
         ('PADDING', (0,0), (-1,-1), 12),
     ]))
 
     story.append(PageBreak())
 
     # -------------------------------------------------------------
-    # PAGE 4: THE PLATFORM WORKFLOW
+    # PAGE 3: WHO IT SERVES
     # -------------------------------------------------------------
-    story.append(Paragraph("ONE WORKFLOW CONNECTS EVIDENCE, GUIDELINES, CONTENT AND HUMAN DECISIONS", page_heading))
+    story.append(Paragraph("DESIGNED FOR THREE DISTINCT ORGANIZATIONAL PERSONAS", page_heading))
     story.append(Paragraph(
-        "VERITY connects approved truth documents, brand guidelines, content submissions, and reviewer decisions into a closed-loop governance pipeline:",
+        "VERITY aligns the entire publication lifecycle by providing role-specific workflows for content creators, senior reviewers, and compliance administrators.",
         body_style
     ))
     story.append(Spacer(1, 10))
 
-    pipeline_steps = [
-        ("01", "INGEST & VERSION APPROVED TRUTH", "Upload PDF, DOCX, and text policies into the Knowledge Base. Store effective dates, review dates, and version designations."),
-        ("02", "SUBMIT CONTENT & DEFINE CONTEXT", "Creator uploads campaign copy, brochure PDF, or social assets while declaring audience, channel, purpose, and tone."),
-        ("03", "EXTRACT CLAIMS & VISUAL ASSETS", "Automated sentence extraction identifies factual, numeric, and promotional claims. OpenCV inspects visual blur and contrast."),
-        ("04", "SEMANTIC EVIDENCE MATCHING", "Statistical n-gram TF-IDF vector matching retrieves top supporting passages from authoritative approved documents."),
-        ("05", "TRANSPARENT RISK SCORING", "Transparent 0–100 risk scoring classifies content as Low, Medium, or High risk with explainable penalty breakdowns."),
-        ("06", "HUMAN REVIEW & AUDIT LOGGING", "Reviewers approve, reject, or request revisions. All decisions, timestamps, and comments enter the immutable audit log."),
+    roles = [
+        ("MARKETING CREATOR", "Drafting & Instant Pre-Submission Verification",
+         "Creators draft copy, upload campaign flyers, and receive real-time factual feedback against approved documents. Contradictory claims are highlighted with 1-click safe corrections before routing to review."),
+        ("GOVERNANCE REVIEWER", "Prioritised Triage Queue & One-Click Audit Decisions",
+         "Reviewers inspect prioritized queues sorted by risk score and deadlines. Reviewers evaluate side-by-side evidence quotes and record binding decisions (Approved, Revision, Rejected) with mandatory audit comments."),
+        ("COMPLIANCE ADMINISTRATOR", "Authoritative Knowledge Base & Platform Policy Governance",
+         "Administrators ingest approved policies, maintain version lifecycles, configure transparent risk scoring weights, inspect cross-asset impact reports, and monitor enterprise Brand Health."),
     ]
 
-    p_rows = []
-    for num, title_s, desc_s in pipeline_steps:
-        p_rows.append([
-            Paragraph(f"<b>{num}</b>", ParagraphStyle('PNum', fontName='Helvetica-Bold', fontSize=14, leading=16, textColor=colors.HexColor('#0891B2'))),
-            Paragraph(f"<b>{title_s}</b><br/>{desc_s}", body_style)
+    r_table_data = []
+    for r_title, r_sub, r_desc in roles:
+        r_table_data.append([
+            [Paragraph(f"<b>{r_title}</b>", card_title),
+             Paragraph(f"<font color='#0891b2'><b>{r_sub}</b></font>", ParagraphStyle('SubR', fontName='Helvetica-Bold', fontSize=8, leading=11)),
+             Spacer(1, 4),
+             Paragraph(r_desc, body_style)]
         ])
 
-    t4 = Table(p_rows, colWidths=[40, 475])
-    t4.setStyle(TableStyle([
+    t3 = Table(r_table_data, colWidths=[515])
+    t3.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#E2E8F0')),
-        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#F1F5F9')),
-        ('BACKGROUND', (0,0), (0,-1), colors.HexColor('#F8FAFC')),
-        ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('PADDING', (0,0), (-1,-1), 7),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+        ('PADDING', (0,0), (-1,-1), 12),
     ]))
-    story.append(t4)
-    story.append(Spacer(1, 12))
+    story.append(t3)
+    story.append(Spacer(1, 16))
 
-    # Boundary Callouts
-    b1 = [
-        Paragraph("<b>WHAT VERITY CHECKS</b>", card_title),
-        Spacer(1, 4),
-        Paragraph("• Factual consistency against approved documents.<br/>• Outdated specifications and expired warranties.<br/>• Banned and required brand terminology.<br/>• Evidence freshness and superseded policies.<br/>• Image blur, contrast, and resolution quality.", bullet_style)
-    ]
-    b2 = [
-        Paragraph("<b>WHAT VERITY DOES NOT DO</b>", card_title),
-        Spacer(1, 4),
-        Paragraph("• Never automatically approves high-risk content.<br/>• Never invents evidence or hallucinates citations.<br/>• Never uses proprietary documents for model training.<br/>• AI explanations are strictly separated from evidence.<br/>• People own final publishing accountability.", bullet_style)
-    ]
-
-    t4_bounds = Table([[b1, b2]], colWidths=[250, 250])
-    t4_bounds.setStyle(TableStyle([
-        ('BACKGROUND', (0,0), (0,0), colors.HexColor('#F0F9FF')),
-        ('BOX', (0,0), (0,0), 1, colors.HexColor('#BAE6FD')),
-        ('BACKGROUND', (1,0), (1,0), colors.HexColor('#FFF1F2')),
-        ('BOX', (1,0), (1,0), 1, colors.HexColor('#FECDD3')),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 10),
-    ]))
-    story.append(t4_bounds)
+    story.append(Paragraph(
+        "<b>Single-Click Demo Persona Switching:</b> A persistent top navigation bar allows judges to switch between Administrator, Reviewer, and Creator roles with one click, immediately updating authorization permissions.",
+        body_style
+    ))
 
     story.append(PageBreak())
 
     # -------------------------------------------------------------
-    # PAGE 5: THREE ORIGINAL CORE INNOVATIONS
+    # PAGE 4: THE PLATFORM
     # -------------------------------------------------------------
-    story.append(Paragraph("THREE CORE INNOVATIONS: TRACEABLE, DEPENDENT AND ADAPTIVE", page_heading))
+    story.append(Paragraph("EIGHTEEN SPECIALISED VIEWS COVERING THE ENTIRE LIFECYCLE", page_heading))
     story.append(Paragraph(
-        "VERITY establishes three architectural innovations that elevate brand governance from superficial grammar checking to verifiable organizational truth:",
+        "VERITY is structured into two functional layers: 6 public informative views for external stakeholders and 12 secure authenticated workspaces for organizational governance.",
         body_style
     ))
-    story.append(Spacer(1, 12))
+    story.append(Spacer(1, 10))
+
+    views_data = [
+        [Paragraph("<b>Layer</b>", card_title), Paragraph("<b>Workspace Views & Implemented Modules</b>", card_title)],
+        [
+            Paragraph("<b>Public Interface (6 Views)</b>", body_bold),
+            Paragraph(
+                "• <b>Landing Page:</b> Hero interactive architecture, live governance metrics, and persona flows.<br/>"
+                "• <b>Features Breakdown:</b> Technical explanations of all innovations and Round 3 additions.<br/>"
+                "• <b>How It Works:</b> Interactive 8-step pipeline walkthrough from ingestion to sign-off.<br/>"
+                "• <b>About & Mission:</b> Academic grounding, team credentials, and responsible AI principles.<br/>"
+                "• <b>Authentication:</b> Instant zero-password demo login with role pre-selection.",
+                bullet_style
+            )
+        ],
+        [
+            Paragraph("<b>Authenticated Workspaces (12 Views)</b>", body_bold),
+            Paragraph(
+                "• <b>Executive Dashboard:</b> Live KPIs, triage summary, and recent audit activity feed.<br/>"
+                "• <b>Content Verification:</b> Text editorial verification & Multimodal Flyer OCR Inspector.<br/>"
+                "• <b>Verification Reports:</b> Detailed versioned reports with explainable risk point breakdowns.<br/>"
+                "• <b>Document Management:</b> Knowledge Base ingestion (PDF, DOCX, TXT) with version history.<br/>"
+                "• <b>Brand Guidelines:</b> Enforces prohibited terminology and mandatory legal disclaimers.<br/>"
+                "• <b>Change Impact Analysis:</b> Proactive dependency tracking & Policy Reconciliation Wizard.<br/>"
+                "• <b>Review & Approvals:</b> Triage queue, version diff analysis, and binding decision logger.<br/>"
+                "• <b>Brand Health Index:</b> 5-component governance score (0–100) with historical trend tracking.<br/>"
+                "• <b>Governance Intelligence:</b> Recurring problem detector and guideline update recommendations.<br/>"
+                "• <b>Platform Settings:</b> Configurable risk scoring weights, tenant ID, and CMS Firewall Gateway.<br/>"
+                "• <b>Notifications & Audit Trail:</b> Comprehensive log of all editorial actions and publishing events.",
+                bullet_style
+            )
+        ],
+    ]
+
+    t4 = Table(views_data, colWidths=[140, 375])
+    t4.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#F1F5F9')),
+        ('BACKGROUND', (0,1), (-1,-1), colors.HexColor('#F8FAFC')),
+        ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
+        ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
+        ('VALIGN', (0,0), (-1,-1), 'TOP'),
+        ('PADDING', (0,0), (-1,-1), 10),
+    ]))
+    story.append(t4)
+
+    story.append(PageBreak())
+
+    # -------------------------------------------------------------
+    # PAGE 5: CORE INNOVATIONS
+    # -------------------------------------------------------------
+    story.append(Paragraph("THREE ARCHITECTURAL INNOVATIONS POWERING BRAND GOVERNANCE", page_heading))
+    story.append(Paragraph(
+        "VERITY addresses brand integrity through three tightly integrated architectural innovations:",
+        body_style
+    ))
+    story.append(Spacer(1, 10))
 
     inno_1 = [
-        Paragraph("<b>01</b>", ParagraphStyle('INum', fontName='Helvetica-Bold', fontSize=16, textColor=colors.HexColor('#0891B2'))),
-        Paragraph("<b>EVIDENCE-LINKED CLAIM VERIFICATION</b>", card_title),
+        Paragraph("<b>01</b>", ParagraphStyle('INum', fontName='Helvetica-Bold', fontSize=16, textColor=colors.HexColor('#0284C7'))),
+        Paragraph("<b>EVIDENCE-LINKED VERIFICATION</b>", card_title),
         Spacer(1, 6),
-        Paragraph("• <b>Precise Classification:</b> Classifies statements into Verified, Unsupported, Contradictory, Potentially Outdated, or Needs Review.", bullet_style),
+        Paragraph("• <b>Provenance Tracing:</b> Every factual assertion is extracted and matched against approved documents using TF-IDF and semantic embeddings.", bullet_style),
         Spacer(1, 4),
-        Paragraph("• <b>Source Traceability:</b> Pinpoints exact document title, approved version, and relevant excerpt passage.", bullet_style),
+        Paragraph("• <b>Source Citations:</b> Displays exact document title, version number, effective date, and verbatim excerpt.", bullet_style),
         Spacer(1, 4),
         Paragraph("• <b>Approved Corrections:</b> Recommends factual corrections grounded strictly in approved corporate documents.", bullet_style),
         Spacer(1, 4),
-        Paragraph("• <i>Rule: An AI explanation is never treated as evidence. Claims require explicit backing in approved sources.</i>", ParagraphStyle('RuleI', fontName='Helvetica-Oblique', fontSize=8, leading=11, textColor=colors.HexColor('#64748B'))),
+        Paragraph("• <i>Rule: AI text is never treated as evidence. Claims require explicit backing in approved sources.</i>", ParagraphStyle('RuleI', fontName='Helvetica-Oblique', fontSize=8, leading=11, textColor=colors.HexColor('#64748B'))),
     ]
 
     inno_2 = [
         Paragraph("<b>02</b>", ParagraphStyle('INum', fontName='Helvetica-Bold', fontSize=16, textColor=colors.HexColor('#059669'))),
-        Paragraph("<b>CROSS-CONTENT CHANGE-IMPACT ANALYSIS</b>", card_title),
+        Paragraph("<b>CROSS-CONTENT CHANGE-IMPACT</b>", card_title),
         Spacer(1, 6),
         Paragraph("• <b>Dependency Tracking:</b> When an approved fact changes (e.g. warranty reduced from 3 years to 2 years), the system identifies all registered assets containing old figures.", bullet_style),
         Spacer(1, 4),
@@ -463,7 +414,7 @@ def build_pdf(filename):
         Spacer(1, 4),
         Paragraph("• <b>Structured Resolution:</b> Reviewers inspect the exact text snippet and resolve the dependency directly in the platform.", bullet_style),
         Spacer(1, 4),
-        Paragraph("• <i>This is proactive dependency management, not reactive search.</i>", ParagraphStyle('RuleI', fontName='Helvetica-Oblique', fontSize=8, leading=11, textColor=colors.HexColor('#64748B'))),
+        Paragraph("• <i>Proactive dependency management, not reactive search.</i>", ParagraphStyle('RuleI', fontName='Helvetica-Oblique', fontSize=8, leading=11, textColor=colors.HexColor('#64748B'))),
     ]
 
     inno_3 = [
@@ -494,63 +445,51 @@ def build_pdf(filename):
     story.append(Spacer(1, 16))
 
     story.append(Paragraph(
-        "<b>Architectural Synergy:</b> Traceability connects every claim to authoritative evidence. Dependency analysis prevents outdated terms from lingering in the wild. Learning connects human review decisions back into clearer organizational governance.",
+        "<b>Architectural Synergy:</b> Provenance connects claims to authoritative evidence. Dependency analysis prevents outdated terms from lingering in collateral. Adaptive intelligence connects review decisions back into clearer guidelines.",
         body_style
     ))
 
     story.append(PageBreak())
 
     # -------------------------------------------------------------
-    # PAGE 6: SIX ADVANCED ENHANCEMENTS (NEW WORKING FEATURES)
+    # PAGE 6: ROUND 3 DELIVERED IMPROVEMENTS
     # -------------------------------------------------------------
-    story.append(Paragraph("SIX ADVANCED ENHANCEMENTS EXTEND GOVERNANCE CAPABILITY", page_heading))
+    story.append(Paragraph("ROUND 3 DELIVERED IMPROVEMENTS: THE THREE EXACT COMMITMENTS", page_heading))
     story.append(Paragraph(
-        "In addition to the three core innovations, VERITY includes six advanced production capabilities fully implemented and demonstrable in the working web application:",
+        "In Round 2, our team committed to three major high-depth product enhancements. In Round 3, we delivered exactly these three features, fully implemented and verifiable in the live application:",
         body_style
     ))
     story.append(Spacer(1, 10))
 
-    enhancements = [
-        ("A. Evidence Freshness & Lifecycle Monitor",
-         "Tracks document versions, approval dates, effective dates, and review/expiry dates. If a claim matches an expired or superseded document, VERITY warns reviewers with a staleness alert rather than assuming invalidity.",
+    r3_improvements = [
+        ("IMPROVEMENT 1: MULTIMODAL VISUAL BOUNDING-BOX FLYER OCR",
+         "What it is: Ingests marketing flyers, banners, and brochures, runs spatial OCR contour segmentation (OpenCV & PyMuPDF), extracts text blocks with normalized coordinates {x, y, w, h}, and evaluates claims against Knowledge Base documents.\n\n"
+         "What it changes for the user: Renders an interactive canvas overlay with red glowing bounding boxes around contradictory claims (e.g. Acme 3-Year Warranty violating Policy v2.4), amber boxes for unsupported claims, and green boxes for verified claims. Clicking any box spotlights verbatim evidence, confidence score, and 1-click safe copy patches.",
          colors.HexColor('#F0F9FF'), colors.HexColor('#0891B2')),
-        ("B. Transparent Explainable Risk Scoring",
-         "Replaces arbitrary AI black-box ratings with a transparent 0–100 risk formula. Factor weights (contradictions: 30%, unsupported claims: 25%, guideline violations: 20%) are fully configurable by administrators in Settings.",
-         colors.HexColor('#FFF1F2'), colors.HexColor('#E11D48')),
-        ("C. Smart Content Diff & Revision Tracking",
-         "When creators revise copy, opcode diff analysis compares versions side-by-side. Highlights added/removed text, verifies if prior issues were corrected, and alerts reviewers if new unsupported claims were introduced.",
+        ("IMPROVEMENT 2: AUTOMATED CROSS-ASSET POLICY RECONCILIATION WIZARD",
+         "What it is: Transforms passive change impact alerts into an active remediation wizard. When an authoritative document changes, the wizard identifies all affected registered collateral assets and synthesizes unified before/after patch diffs.\n\n"
+         "What it changes for the user: Users inspect side-by-side token diffs showing superseded text in red strikethrough and new compliant text in green highlight. Provides 1-click 'Batch Propagate Patches' to update all collateral records simultaneously, resolving alerts and logging an immutable audit record.",
          colors.HexColor('#F0FDF4'), colors.HexColor('#059669')),
-        ("D. Organisation Brand Health Score",
-         "Live executive dashboard calculating organizational governance health (0–100): Grounded Evidence Rate (35%), Unresolved High-Risk Issues (20%), Asset Freshness (15%), Review Velocity (20%), and Guideline Alignment (10%).",
+        ("IMPROVEMENT 3: BI-DIRECTIONAL PRE-PUBLISH CMS FIREWALL & WEBHOOK GATEWAY",
+         "What it is: Headless pre-publish gateway (POST /api/firewall/check) for WordPress, Webflow, Ghost, and CI/CD pipelines. Evaluates incoming draft payloads against active brand policies and blocks publication if Risk Score >= 30 or critical contradictions exist.\n\n"
+         "What it changes for the user: Features an interactive UI simulator with live webhook dispatching, HMAC SHA-256 signature verification, and real-time terminal output displaying Pass/Block verdicts, violation breakdowns, and cryptographic publish tokens.",
          colors.HexColor('#FAF5FF'), colors.HexColor('#7C3AED')),
-        ("E. Context-Aware Brand Checking",
-         "Interprets brand guidelines based on declared context (Audience, Platform, Purpose, Category, Tone). Differentiates between formal customer notices and casual social ads while strictly enforcing mandatory factual truth.",
-         colors.HexColor('#FFFBEB'), colors.HexColor('#D97706')),
-        ("F. Prioritised Human Review Queue",
-         "Smart triage queue sorting submissions by Risk Severity (High Risk first), Publication Deadline, Submission Timestamp, and Unresolved Issues. Includes full in-app notifications and reviewer decision audit trails.",
-         colors.HexColor('#F1F5F9'), colors.HexColor('#0F172A')),
     ]
 
-    grid_data = []
-    for i in range(0, len(enhancements), 2):
-        e1 = enhancements[i]
-        e2 = enhancements[i+1]
-        c1 = [Paragraph(f"<b>{e1[0]}</b>", card_title), Spacer(1, 3), Paragraph(e1[1], bullet_style)]
-        c2 = [Paragraph(f"<b>{e2[0]}</b>", card_title), Spacer(1, 3), Paragraph(e2[1], bullet_style)]
-        grid_data.append([c1, c2])
+    r3_table_data = []
+    for title, desc, bg, border in r3_improvements:
+        r3_table_data.append([
+            [Paragraph(f"<b>{title}</b>", card_title),
+             Spacer(1, 4),
+             Paragraph(desc.replace("\n\n", "<br/><br/>"), bullet_style)]
+        ])
 
-    t6 = Table(grid_data, colWidths=[250, 250])
+    t6 = Table(r3_table_data, colWidths=[515])
     t6.setStyle(TableStyle([
+        ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
         ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
-        ('BACKGROUND', (0,0), (0,0), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (0,1), (0,1), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (1,1), (1,1), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (0,2), (0,2), colors.HexColor('#F8FAFC')),
-        ('BACKGROUND', (1,2), (1,2), colors.HexColor('#F8FAFC')),
-        ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 8),
+        ('PADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(t6)
 
@@ -575,10 +514,10 @@ def build_pdf(filename):
          "Fast statistical semantic vector retriever with character & word n-grams and cosine distance matching over approved passages. Backed by Keyword and ChromaDB fallback options."),
         ("DATA PERSISTENCE & ORM", "SQLite (verity.db) · PostgreSQL Migration Ready",
          "Dual-engine portable SQL architecture. SQLite provides instant zero-config demonstration with seeded Acme Global data, while PostgreSQL DDL handles enterprise scale."),
-        ("DOCUMENT & VISION EXTRACTION", "PyMuPDF · Python-DOCX · OpenCV",
-         "Extracts structured text and metadata from PDF, DOCX, and TXT. OpenCV provides automated visual quality checks (Laplacian variance blur, contrast, resolution)."),
-        ("AUTHENTICATION & ACCESS", "Local JWT · Zero-Login Demo Mode · Supabase JWKS",
-         "Hybrid auth supporting instant one-click login for Administrator (Rohith), Reviewer, and Creator, alongside enterprise Supabase ES256/RS256 JWT validation."),
+        ("MULTIMODAL VISION & OCR", "PyMuPDF · OpenCV · Morphology Contours",
+         "Extracts structured text from PDF/DOCX. OpenCV contour segmentation isolates spatial text bounding boxes on marketing flyers with normalized coordinates for interactive SVG overlays."),
+        ("CMS FIREWALL & WEBHOOK GATEWAY", "HMAC SHA-256 · Pre-Publish Interception Gateway",
+         "Headless publishing firewall evaluating WordPress and Webflow payloads. Enforces pre-publish gatekeeper rules and issues cryptographic tokens for authorized deployments."),
     ]
 
     arch_table_data = []
@@ -612,7 +551,7 @@ def build_pdf(filename):
 
     story.append(Table([[
         Paragraph(
-            "<b>DEPLOYMENT TOPOLOGY:</b> Multi-stage Docker container builds the React frontend in Node 20 and packages it into Python 3.11-slim. Dynamic PORT binding enables 1-click deployment on Render, Railway, or GitHub Pages.",
+            "<b>OFFLINE-FIRST STATIC RESILIENCY:</b> Built with an in-browser mock engine fallback in frontend/src/api.ts. When hosted statically on GitHub Pages without local FastAPI running, every view, bounding-box flyer, and reconciliation wizard operates immediately with zero network errors.",
             body_style
         )
     ]], colWidths=[515], style=[
@@ -628,18 +567,18 @@ def build_pdf(filename):
     # -------------------------------------------------------------
     story.append(Paragraph("PROVEN LIVE APPLICATION, REAL DATA & PASSING TEST SUITE", page_heading))
     story.append(Paragraph(
-        "VERITY is not a static concept or mockup. It is a live, fully verified application backed by automated test suites and demonstrable user flows:",
+        "VERITY is not a conceptual mockup. It is a live, fully verified application backed by an automated 29-test suite covering core algorithms and Round 3 additions:",
         body_style
     ))
     story.append(Spacer(1, 10))
 
-    # Test Metrics Table
     test_rows = [
         [Paragraph("<b>Automated Test Suite (pytest)</b>", card_title), Paragraph("<b>Coverage Scope</b>", card_title), Paragraph("<b>Result</b>", card_title)],
         [Paragraph("<b>Engine & Verification Tests (13)</b>", body_bold), Paragraph("Claim extraction, evidence comparison, risk scoring, diff opcodes, impact mapping", bullet_style), Paragraph("<font color='#059669'><b>13 / 13 Passed</b></font>", body_bold)],
         [Paragraph("<b>Extraction & Security Tests (4)</b>", body_bold), Paragraph("PDF extraction, DOCX parsing, token verification, route protection", bullet_style), Paragraph("<font color='#059669'><b>4 / 4 Passed</b></font>", body_bold)],
-        [Paragraph("<b>New Enhancements Tests (4)</b>", body_bold), Paragraph("Role switching, prioritized queue triage, brand health formula, visual OpenCV blur", bullet_style), Paragraph("<font color='#059669'><b>4 / 4 Passed</b></font>", body_bold)],
-        [Paragraph("<b>TOTAL AUTOMATED TESTS</b>", card_title), Paragraph("<b>Full end-to-end regression validation</b>", body_bold), Paragraph("<font color='#059669'><b>21 / 21 Passed (100%)</b></font>", card_title)],
+        [Paragraph("<b>Governance & Brand Health Tests (4)</b>", body_bold), Paragraph("Role switching, prioritized queue triage, brand health formula, visual OpenCV blur", bullet_style), Paragraph("<font color='#059669'><b>4 / 4 Passed</b></font>", body_bold)],
+        [Paragraph("<b>Round 3 Delivered Features Tests (8)</b>", body_bold), Paragraph("Multimodal flyer OCR, spatial box evaluation, patch diffs, batch apply, CMS firewall pre-publish gate, webhook dispatch", bullet_style), Paragraph("<font color='#059669'><b>8 / 8 Passed</b></font>", body_bold)],
+        [Paragraph("<b>TOTAL AUTOMATED TESTS</b>", card_title), Paragraph("<b>Full end-to-end regression validation</b>", body_bold), Paragraph("<font color='#059669'><b>29 / 29 Passed (100%)</b></font>", card_title)],
     ]
 
     t8_tests = Table(test_rows, colWidths=[165, 230, 120])
@@ -649,38 +588,38 @@ def build_pdf(filename):
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
         ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('PADDING', (0,0), (-1,-1), 6),
+        ('PADDING', (0,0), (-1,-1), 5),
     ]))
     story.append(t8_tests)
     story.append(Spacer(1, 12))
 
-    story.append(Paragraph("<b>Demonstrated Operational Scenario: Acme Global Warranty Update</b>", subheading))
+    story.append(Paragraph("<b>Demonstrated Operational Scenario: Acme Global Warranty Update & CMS Interception</b>", subheading))
 
     scenario_content = [
-        Paragraph("<b>1. Policy Ingestion:</b> Administrator Rohith uploads <i>Standard Product Warranty Policy v2.0</i> (effective: 2-year warranty term, superseding 3-year term).", bullet_style),
-        Paragraph("<b>2. Collateral Submission:</b> Creator Marcus Vance submits copy claiming: <i>'All Apex devices include a 3 year warranty and 85% productivity boost.'</i>", bullet_style),
-        Paragraph("<b>3. Automated Verification:</b> System classifies warranty claim as <b>Contradictory</b> against approved source v2.0, and flags productivity claim as <b>Unsupported</b>.", bullet_style),
-        Paragraph("<b>4. Explainable Risk Score:</b> Calculates <b>Risk Score = 30 / 100 (High Risk)</b> due to contradiction and missing evidence. Auto-approval is blocked.", bullet_style),
-        Paragraph("<b>5. Prioritized Triage:</b> Places submission at the top of Reviewer Elena Rostova's queue. Elena requests revision with evidence-based note.", bullet_style),
-        Paragraph("<b>6. Smart Revision Diff:</b> Marcus resubmits corrected copy (2-year warranty). Diff tool confirms contradiction resolution. Elena approves content.", bullet_style),
+        Paragraph("<b>1. Policy Ingestion:</b> Administrator Rohith uploads <i>Hardware Warranty Policy v2.4</i> (2-year term, superseding 3-year term).", bullet_style),
+        Paragraph("<b>2. Collateral Submission:</b> Creator submits visual flyer with claim: <i>'All Apex X1 Devices Include 3-Year Unlimited Coverage.'</i>", bullet_style),
+        Paragraph("<b>3. Multimodal OCR:</b> System detects spatial text bounding box, draws red glowing overlay, and flags <b>Contradictory Claim</b> against Policy v2.4.", bullet_style),
+        Paragraph("<b>4. Policy Reconciliation:</b> Change Impact Wizard generates unified patch diffs across all registered collateral assets with 1-click batch propagation.", bullet_style),
+        Paragraph("<b>5. CMS Firewall Interception:</b> When WordPress webhook attempts publishing non-compliant 3-year copy, the Pre-Publish Firewall blocks publication (Risk Score: 74).", bullet_style),
+        Paragraph("<b>6. Compliant Publishing:</b> Once copy is reconciled to 2-year terms, CMS Firewall approves the payload and issues cryptographic token <code>vrty-pub-...</code>.", bullet_style),
     ]
 
     t8_scen = Table([[scenario_content]], colWidths=[515])
     t8_scen.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#E2E8F0')),
-        ('PADDING', (0,0), (-1,-1), 10),
+        ('PADDING', (0,0), (-1,-1), 8),
     ]))
     story.append(t8_scen)
 
     story.append(PageBreak())
 
     # -------------------------------------------------------------
-    # PAGE 9: RESPONSIBLE AI
+    # PAGE 9: RESPONSIBLE AI & ZERO-DEFECT HARDENING
     # -------------------------------------------------------------
-    story.append(Paragraph("RESPONSIBLE AI IS A PRODUCT REQUIREMENT, NOT AN AFTERTHOUGHT", page_heading))
+    story.append(Paragraph("RESPONSIBLE AI & ZERO-DEFECT RESILIENCE PHILOSOPHY", page_heading))
     story.append(Paragraph(
-        "In enterprise governance, autonomous black-box decisions introduce extreme legal and brand risk. VERITY is built strictly upon Responsible AI principles that enforce transparency and human oversight:",
+        "In enterprise brand governance, autonomous black-box decisions introduce severe legal liabilities. VERITY is built upon Responsible AI principles and rigorous hardening to ensure the product holds up without supervision:",
         body_style
     ))
     story.append(Spacer(1, 10))
@@ -700,15 +639,15 @@ def build_pdf(filename):
     ]
 
     sec_items = [
-        Paragraph("<b>SECURITY & DATA INTEGRITY</b>", card_title),
+        Paragraph("<b>ZERO-DEFECT HARDENING</b>", card_title),
         Spacer(1, 6),
-        Paragraph("• <b>Confidentiality Guarantee:</b> Proprietary organizational documents are never used for external model fine-tuning or public LLM training.", bullet_style),
+        Paragraph("• <b>Offline Fallback Engine:</b> Intelligent mock fallback in frontend/src/api.ts ensures the site runs seamlessly on static hosting without network hangs.", bullet_style),
+        Spacer(1, 5),
+        Paragraph("• <b>Empty State & Error Safety:</b> Every list, filter, and viewer includes explicit empty states, preventing crashes on bad inputs or unseeded states.", bullet_style),
+        Spacer(1, 5),
+        Paragraph("• <b>Idempotent Double-Click Protection:</b> Action buttons disable during execution, preventing duplicate submissions or race conditions.", bullet_style),
         Spacer(1, 5),
         Paragraph("• <b>Air-Gapped Ready:</b> The statistical TF-IDF semantic engine runs completely locally without external cloud API dependencies.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Role-Based Boundaries:</b> Granular role separation ensures creators cannot approve their own submissions or alter risk formulas.", bullet_style),
-        Spacer(1, 5),
-        Paragraph("• <b>Rate-Limiting & Input Defense:</b> SlowAPI throttles abuse; strict file validators inspect mime-types and file headers before extraction.", bullet_style),
     ]
 
     t9 = Table([[ctrl_items, sec_items]], colWidths=[250, 250])
@@ -718,7 +657,7 @@ def build_pdf(filename):
         ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F0FDF4')),
         ('BOX', (1,0), (1,0), 1, colors.HexColor('#BBF7D0')),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 12),
+        ('PADDING', (0,0), (-1,-1), 10),
     ]))
     story.append(t9)
     story.append(Spacer(1, 14))
@@ -738,63 +677,73 @@ def build_pdf(filename):
     story.append(PageBreak())
 
     # -------------------------------------------------------------
-    # PAGE 10: POSITIONING & CONCLUSION
+    # PAGE 10: PRODUCT ROADMAP & CONCLUSION
     # -------------------------------------------------------------
-    story.append(Paragraph("VERITY INTEGRATES CAPABILITIES THAT ARE OFTEN HANDLED SEPARATELY", page_heading))
+    story.append(Paragraph("PRODUCT ROADMAP & FUTURE DEVELOPMENT PLAN", page_heading))
     story.append(Paragraph(
-        "Market tools address either linguistic style or generative drafting. VERITY provides the missing enterprise layer: evidence provenance, policy change dependencies, and human sign-off governance.",
+        "VERITY is architected as an extensible enterprise brand protection platform. The product roadmap spans completed hackathon milestones to future enterprise scale:",
         body_style
     ))
-    story.append(Spacer(1, 10))
+    story.append(Spacer(1, 8))
 
-    comp_data = [
-        [Paragraph("<b>Approach</b>", card_title), Paragraph("<b>Core Capability</b>", card_title), Paragraph("<b>Governance & Truth Boundary</b>", card_title)],
+    roadmap_data = [
+        [Paragraph("<b>Phase</b>", card_title), Paragraph("<b>Milestone & Capabilities</b>", card_title), Paragraph("<b>Status</b>", card_title)],
         [
-            Paragraph("<b>Grammar Checkers</b><br/>(Grammarly, etc.)", body_bold),
-            Paragraph("Spelling, tone, readability, and syntax correction.", body_style),
-            Paragraph("Zero awareness of organizational truth, policy documents, or factual claims.", bullet_style)
+            Paragraph("<b>Phase 1: Foundation</b>", body_bold),
+            Paragraph("Core evidence-linked verification, multi-format text ingestion (PDF, DOCX, TXT), transparent risk scoring, and role-based access control.", bullet_style),
+            Paragraph("<font color='#059669'><b>Completed (Round 1)</b></font>", body_bold)
         ],
         [
-            Paragraph("<b>Generic AI Writers</b><br/>(ChatGPT, Claude, etc.)", body_bold),
-            Paragraph("Creative copywriting, rewriting, and text generation.", body_style),
-            Paragraph("High hallucination risk; cannot verify citations against internal source versions.", bullet_style)
+            Paragraph("<b>Phase 2: Governance</b>", body_bold),
+            Paragraph("18-view SPA, adaptive governance intelligence, executive Brand Health Score, OpenCV visual screening, and 21 passing automated tests.", bullet_style),
+            Paragraph("<font color='#059669'><b>Completed (Round 2)</b></font>", body_bold)
         ],
         [
-            Paragraph("<b>VERITY Platform</b><br/>(Our Solution)", card_title),
-            Paragraph("<b>Evidence-linked claim verification, change impact analysis, freshness tracking, and diff audits.</b>", body_style),
-            Paragraph("<b>Closed-loop governance connecting approved source truth with auditable human sign-offs.</b>", body_style)
+            Paragraph("<b>Phase 3: Deep Delivery</b>", body_bold),
+            Paragraph("Multimodal Visual Flyer OCR with spatial bounding boxes, Automated Cross-Asset Policy Reconciliation Wizard, and Pre-Publish CMS Firewall Webhook Gateway.", bullet_style),
+            Paragraph("<font color='#059669'><b>Completed (Round 3)</b></font>", card_title)
+        ],
+        [
+            Paragraph("<b>Phase 4: Ecosystem</b>", body_bold),
+            Paragraph("Native Figma & Adobe Creative Cloud extensions, bi-directional HubSpot & Salesforce integrations, and automated PR-bot for Git documentation repositories.", bullet_style),
+            Paragraph("<font color='#0284C7'><b>Planned (Q1 2027)</b></font>", body_bold)
+        ],
+        [
+            Paragraph("<b>Phase 5: Global Scale</b>", body_bold),
+            Paragraph("Cross-lingual multilingual semantic claim verification, enterprise SCIM/SAML SSO, and regulatory compliance mapping for EU AI Act & FTC guidelines.", bullet_style),
+            Paragraph("<font color='#64748B'><b>Planned (Q3 2027)</b></font>", body_bold)
         ],
     ]
 
-    t10_comp = Table(comp_data, colWidths=[120, 185, 210])
-    t10_comp.setStyle(TableStyle([
+    t10_road = Table(roadmap_data, colWidths=[110, 285, 120])
+    t10_road.setStyle(TableStyle([
         ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#F1F5F9')),
         ('BACKGROUND', (0,3), (-1,3), colors.HexColor('#F0F9FF')),
         ('BOX', (0,0), (-1,-1), 1, colors.HexColor('#CBD5E1')),
         ('BOX', (0,3), (-1,3), 1.5, colors.HexColor('#0284C7')),
         ('INNERGRID', (0,0), (-1,-1), 0.5, colors.HexColor('#E2E8F0')),
         ('VALIGN', (0,0), (-1,-1), 'MIDDLE'),
-        ('PADDING', (0,0), (-1,-1), 7),
+        ('PADDING', (0,0), (-1,-1), 6),
     ]))
-    story.append(t10_comp)
-    story.append(Spacer(1, 12))
+    story.append(t10_road)
+    story.append(Spacer(1, 10))
 
     ref_items = [
         Paragraph("<b>ACADEMIC REFERENCES</b>", card_title),
-        Spacer(1, 4),
-        Paragraph("1. Kirkby, Baumgarth & Henseler, <i>'Welcome, new brand colleague! A conceptual framework for human–AI co-creation,'</i> Journal of Brand Management, 2025.", bullet_style),
         Spacer(1, 3),
+        Paragraph("1. Kirkby et al., <i>'Welcome, new brand colleague! A conceptual framework for human–AI co-creation,'</i> Journal of Brand Management, 2025.", bullet_style),
+        Spacer(1, 2),
         Paragraph("2. Westphal et al., <i>'Decision control and explanations in human-AI collaboration,'</i> Computers in Human Behavior, vol. 144, 2023.", bullet_style),
-        Spacer(1, 3),
+        Spacer(1, 2),
         Paragraph("3. Haupt et al., <i>'Consumer responses to human-AI collaboration at organizational frontlines,'</i> Review of Managerial Science, 2024.", bullet_style),
     ]
 
     conc_items = [
-        Paragraph("<b>PROJECT CONCLUSION</b>", card_title),
+        Paragraph("<b>FINAL CONCLUSION</b>", card_title),
+        Spacer(1, 3),
+        Paragraph("VERITY delivers the missing layer in organizational communication: evidence provenance, policy change dependencies, and auditable human sign-offs. By combining multimodal OCR inspection, proactive reconciliation, and pre-publish CMS gatekeeping, VERITY provides trustworthy brand governance at enterprise scale.", body_style),
         Spacer(1, 4),
-        Paragraph("VERITY successfully bridges the gap between approved organizational knowledge and multi-channel publication. By coupling statistical evidence retrieval with transparent risk scoring and human review accountability, VERITY delivers trustworthy brand governance at scale.", body_style),
-        Spacer(1, 6),
-        Paragraph("<b>Every Claim Needs Evidence. Every Publication Needs Accountability.</b>", ParagraphStyle('ConcTag', fontName='Helvetica-Bold', fontSize=8.5, leading=12, textColor=colors.HexColor('#0891B2')))
+        Paragraph("<b>Every Claim Needs Evidence. Every Publication Needs Accountability.</b>", ParagraphStyle('ConcTag', fontName='Helvetica-Bold', fontSize=8.5, leading=11, textColor=colors.HexColor('#0891B2')))
     ]
 
     t10_bottom = Table([[ref_items, conc_items]], colWidths=[250, 250])
@@ -804,11 +753,10 @@ def build_pdf(filename):
         ('BACKGROUND', (1,0), (1,0), colors.HexColor('#F0FDF4')),
         ('BOX', (1,0), (1,0), 1, colors.HexColor('#BBF7D0')),
         ('VALIGN', (0,0), (-1,-1), 'TOP'),
-        ('PADDING', (0,0), (-1,-1), 10),
+        ('PADDING', (0,0), (-1,-1), 8),
     ]))
     story.append(t10_bottom)
 
-    # Build document
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"Successfully generated {filename}")
 

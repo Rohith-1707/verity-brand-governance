@@ -12,7 +12,8 @@ import {
   ListOrdered,
   CheckCircle,
   AlertTriangle,
-  ArrowRight
+  ArrowRight,
+  Flame
 } from 'lucide-react';
 import { Navbar } from '../../components/layout/Navbar';
 import { Footer } from '../../components/layout/Footer';
@@ -131,6 +132,86 @@ export const FeaturesPage: React.FC = () => {
               <div className="text-amber-400 text-[11px]">Frequency: Prohibited term "unbeatable" flagged 3x</div>
               <div className="p-2 rounded bg-slate-900 text-slate-300 text-[11px]">
                 Recommendation: Provide authorized replacement terminology in marketing handbook (e.g. "high performance").
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Round 3 Delivered Innovations Section */}
+        <div className="mt-20 p-8 sm:p-10 rounded-3xl bg-gradient-to-b from-slate-900 to-slate-950 border border-cyan-800/40 shadow-2xl space-y-8">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-[11px] font-black uppercase tracking-wider text-cyan-400 bg-cyan-950/80 px-3 py-1 rounded-full border border-cyan-800">
+              Round 3 Hackathon Deliverables · Fully Implemented
+            </span>
+            <h3 className="text-2xl sm:text-3xl font-black text-white">
+              The Three Major Delivered Improvements
+            </h3>
+            <p className="text-xs text-slate-400">
+              Delivered exactly as committed in Round 2: multimodal visual inspection, active policy reconciliation, and headless CMS enforcement.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* R3 Improvement 1 */}
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4 hover:border-cyan-800/60 transition group">
+              <div className="flex items-center justify-between">
+                <span className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition">
+                  <ShieldCheck className="w-5 h-5" />
+                </span>
+                <span className="text-[10px] font-mono font-bold text-cyan-400">IMPROVEMENT 01</span>
+              </div>
+              <h4 className="text-base font-bold text-white">
+                Multimodal Visual Bounding-Box Flyer OCR
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Extracts text and spatial coordinates from visual flyers, banners, and brochures. Renders interactive glowing bounding boxes over contradictory or unsupported statements directly on canvas.
+              </p>
+              <div className="p-3 rounded-xl bg-slate-950 text-[11px] text-cyan-300 font-mono">
+                ✓ Interactive SVG overlays<br />
+                ✓ Verbatim claim inspection<br />
+                ✓ 1-click safe copy patches
+              </div>
+            </div>
+
+            {/* R3 Improvement 2 */}
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4 hover:border-cyan-800/60 transition group">
+              <div className="flex items-center justify-between">
+                <span className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition">
+                  <GitCompare className="w-5 h-5" />
+                </span>
+                <span className="text-[10px] font-mono font-bold text-cyan-400">IMPROVEMENT 02</span>
+              </div>
+              <h4 className="text-base font-bold text-white">
+                Automated Policy Reconciliation Wizard
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Transforms change impact alerts into an active remediation workflow. Generates unified before/after patch diffs across registered collateral for instant 1-click batch propagation.
+              </p>
+              <div className="p-3 rounded-xl bg-slate-950 text-[11px] text-emerald-300 font-mono">
+                ✓ Unified before/after diffs<br />
+                ✓ SequenceMatcher token diffs<br />
+                ✓ 1-click batch propagation
+              </div>
+            </div>
+
+            {/* R3 Improvement 3 */}
+            <div className="p-6 rounded-2xl bg-slate-900/80 border border-slate-800 space-y-4 hover:border-cyan-800/60 transition group">
+              <div className="flex items-center justify-between">
+                <span className="p-2.5 rounded-xl bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 group-hover:scale-110 transition">
+                  <Flame className="w-5 h-5" />
+                </span>
+                <span className="text-[10px] font-mono font-bold text-cyan-400">IMPROVEMENT 03</span>
+              </div>
+              <h4 className="text-base font-bold text-white">
+                Bi-Directional Pre-Publish CMS Firewall
+              </h4>
+              <p className="text-xs text-slate-300 leading-relaxed">
+                Headless pre-publish gateway for WordPress, Webflow, and CI/CD pipelines. Evaluates draft payloads and blocks deployment if Risk Score &gt;= 30 or critical contradictions exist.
+              </p>
+              <div className="p-3 rounded-xl bg-slate-950 text-[11px] text-purple-300 font-mono">
+                ✓ Pre-publish blocking gate<br />
+                ✓ HMAC SHA-256 signatures<br />
+                ✓ Cryptographic publish tokens
               </div>
             </div>
           </div>

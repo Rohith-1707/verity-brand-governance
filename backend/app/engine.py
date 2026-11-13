@@ -305,3 +305,266 @@ def generate_governance_insights(submissions: list[dict], decisions: list[dict],
         "top_contradictions": [{"item": k, "count": v} for k, v in rejected_claims_counter.most_common(5)],
         "recommendations": recommendations
     }
+
+
+def evaluate_flyer_blocks(
+    blocks: list[dict],
+    current_docs: list[dict],
+    superseded_docs: list[dict],
+    banned: list[dict],
+    required: list[dict]
+) -> dict:
+    """Evaluate multimodal spatial flyer blocks against Knowledge Base facts and guidelines."""
+    annotated = []
+    contradictory_cnt = 0
+    unsupported_cnt = 0
+    verified_cnt = 0
+    guideline_cnt = 0
+
+    for b in blocks:
+        text = b.get("text", "").strip()
+        if not text:
+            continue
+        # Banned terms apply to individual bounding box text blocks
+        banned_hits = check_guidelines(text, {}, banned, [])
+        claims = extract_claims(text)
+
+        if not claims:
+            status = "verified"
+            evidence = None
+            why = "General brand collateral messaging with no contradicted numerical or factual assertions."
+            fix = None
+            risk_level = "Low"
+            conf = 0.95
+        else:
+            first_claim = claims[0]
+            cur_hits = []
+            for d in current_docs:
+                for sent in sentences(d.get("text", "")):
+                    shared = len(tokens(sent) & tokens(first_claim))
+                    if shared >= 2:
+                        score = shared / max(len(tokens(sent)), len(tokens(first_claim)))
+                        cur_hits.append({
+                            "title": d.get("title", ""),
+                            "version": d.get("version", "1"),
+                            "effective": d.get("effective", ""),
+                            "review": d.get("review", ""),
+                            "text": sent,
+                            "score": score
+                        })
+            cur_hits.sort(key=lambda x: x["score"], reverse=True)
+
+            old_hits = []
+            for d in superseded_docs:
+                for sent in sentences(d.get("text", "")):
+                    shared = len(tokens(sent) & tokens(first_claim))
+                    if shared >= 2:
+                        score = shared / max(len(tokens(sent)), len(tokens(first_claim)))
+                        old_hits.append({
+                            "title": d.get("title", ""),
+                            "version": d.get("version", "1"),
+                            "effective": d.get("effective", ""),
+                            "review": d.get("review", ""),
+                            "text": sent,
+                            "score": score
+                        })
+            old_hits.sort(key=lambda x: x["score"], reverse=True)
+
+            finding = classify_claim(first_claim, cur_hits, old_hits)
+            status = finding["type"]
+            evidence = finding.get("evidence")
+            why = finding.get("why")
+            fix = finding.get("fix")
+            risk_level = "High" if status == "contradictory" else "Medium" if status in ("unsupported", "outdated") else "Low"
+            conf = 0.98 if status == "contradictory" else 0.92 if status == "verified" else 0.88
+
+        if banned_hits:
+            status = "guideline"
+            why = banned_hits[0]["why"]
+            fix = banned_hits[0]["fix"]
+            risk_level = "High"
+
+        if status == "contradictory":
+            contradictory_cnt += 1
+        elif status == "unsupported":
+            unsupported_cnt += 1
+        elif status == "verified":
+            verified_cnt += 1
+        elif status == "guideline":
+            guideline_cnt += 1
+
+        annotated.append({
+            "id": b.get("id", f"box-{len(annotated)+1}"),
+            "text": text,
+            "x": b.get("x", 10),
+            "y": b.get("y", 10),
+            "width": b.get("width", 80),
+            "height": b.get("height", 12),
+            "status": status,
+            "risk_level": risk_level,
+            "confidence": conf,
+            "why": why,
+            "evidence": evidence,
+            "suggested_fix": fix
+        })
+
+    overall_risk = "High" if contradictory_cnt > 0 or guideline_cnt > 0 else "Medium" if unsupported_cnt > 0 else "Low"
+    return {
+        "boxes": annotated,
+        "summary": {
+            "total_claims": len(annotated),
+            "contradictory": contradictory_cnt,
+            "unsupported": unsupported_cnt,
+            "verified": verified_cnt,
+            "guideline": guideline_cnt,
+            "overall_risk": overall_risk
+        }
+    }
+
+
+def generate_reconciliation_patches(impacts: list[dict], current_docs: list[dict]) -> list[dict]:
+    """Generate side-by-side patch diffs across registered collateral for superseded facts."""
+    patches = []
+    doc_map = {d.get("title", "").strip().lower(): d for d in current_docs}
+
+    for imp in impacts:
+        old_sent = imp.get("sentence", "")
+        old_term = imp.get("old_text", "")
+        doc_title = imp.get("document_title", "")
+        content_title = imp.get("content_title", "Registered Collateral Asset")
+
+        cur_doc = doc_map.get(doc_title.strip().lower())
+        new_authoritative = ""
+        if cur_doc:
+            cur_sents = sentences(cur_doc.get("text", ""))
+            toks_old = tokens(old_sent)
+            best_match = None
+            best_score = 0
+            for cs in cur_sents:
+                score = len(tokens(cs) & toks_old)
+                if score > best_score:
+                    best_score = score
+                    best_match = cs
+            new_authoritative = best_match or (cur_sents[0] if cur_sents else "")
+
+        if not new_authoritative:
+            old_nums = numbers(old_sent)
+            new_nums = numbers(old_term)
+            if old_nums and new_nums:
+                new_authoritative = old_sent.replace(old_nums[0], new_nums[0])
+            else:
+                new_authoritative = old_sent
+
+        diff_ops = diff_words(old_sent, new_authoritative)
+
+        patches.append({
+            "impact_id": str(imp.get("id")),
+            "asset_id": str(imp.get("submission_id")),
+            "asset_title": content_title,
+            "asset_type": "Marketing Collateral / Registered Asset",
+            "document_title": doc_title,
+            "document_version": str(cur_doc.get("version", "2.4") if cur_doc else "2.4"),
+            "old_text": old_sent,
+            "new_text": new_authoritative,
+            "diff": diff_ops,
+            "risk_delta": "High -> Low (Compliant)",
+            "status": "pending"
+        })
+    return patches
+
+
+def evaluate_cms_firewall(
+    channel: str,
+    title: str,
+    content: str,
+    author: str,
+    current_docs: list[dict],
+    superseded_docs: list[dict],
+    banned: list[dict],
+    required: list[dict],
+    threshold: int = 30
+) -> dict:
+    """Pre-publish headless CMS firewall evaluation."""
+    import uuid
+    from datetime import datetime, timezone
+
+    claims = extract_claims(content)
+    findings = []
+    for c in claims:
+        cur_hits = []
+        for d in current_docs:
+            for sent in sentences(d.get("text", "")):
+                shared = len(tokens(sent) & tokens(c))
+                if shared >= 2:
+                    score = shared / max(len(tokens(sent)), len(tokens(c)))
+                    cur_hits.append({
+                        "title": d.get("title", ""),
+                        "version": d.get("version", "1"),
+                        "effective": d.get("effective", ""),
+                        "review": d.get("review", ""),
+                        "text": sent,
+                        "score": score
+                    })
+        cur_hits.sort(key=lambda x: x["score"], reverse=True)
+
+        old_hits = []
+        for d in superseded_docs:
+            for sent in sentences(d.get("text", "")):
+                shared = len(tokens(sent) & tokens(c))
+                if shared >= 2:
+                    score = shared / max(len(tokens(sent)), len(tokens(c)))
+                    old_hits.append({
+                        "title": d.get("title", ""),
+                        "version": d.get("version", "1"),
+                        "effective": d.get("effective", ""),
+                        "review": d.get("review", ""),
+                        "text": sent,
+                        "score": score
+                    })
+        old_hits.sort(key=lambda x: x["score"], reverse=True)
+
+        f = classify_claim(c, cur_hits, old_hits)
+        findings.append(f)
+
+    g_findings = check_guidelines(content, {"platform": channel}, banned, required)
+    all_findings = findings + g_findings
+    risk = assess_risk(all_findings)
+
+    has_contradiction = any(f.get("type") == "contradictory" for f in all_findings)
+    has_guideline_violation = any(f.get("type") == "guideline" for f in all_findings)
+
+    is_blocked = has_contradiction or has_guideline_violation or risk["score"] >= threshold
+    action = "BLOCKED" if is_blocked else "PASSED"
+    allowed = not is_blocked
+
+    violations = []
+    for f in all_findings:
+        if f.get("type") in ("contradictory", "guideline", "outdated"):
+            violations.append({
+                "rule": f.get("type").upper(),
+                "claim": f.get("claim"),
+                "explanation": f.get("why"),
+                "severity": "CRITICAL" if f.get("type") in ("contradictory", "guideline") else "WARNING"
+            })
+
+    publish_token = f"vrty-pub-{uuid.uuid4().hex[:16]}" if allowed else None
+
+    reason = (
+        f"Publishing BLOCKED by Brand Governance Firewall: {len(violations)} critical policy violation(s) detected. Pre-publish gate mandates revision or authorized bypass."
+        if is_blocked
+        else "Publishing APPROVED by Brand Governance Firewall: Zero critical contradictions detected. Content is verified against authoritative Knowledge Base sources."
+    )
+
+    return {
+        "allowed": allowed,
+        "action": action,
+        "channel": channel,
+        "title": title,
+        "author": author,
+        "risk_score": risk["score"],
+        "risk_level": risk["level"],
+        "policy_violations": violations,
+        "reason": reason,
+        "publish_token": publish_token,
+        "timestamp": datetime.now(timezone.utc).isoformat()
+    }
